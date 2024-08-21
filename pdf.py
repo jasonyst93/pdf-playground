@@ -1,11 +1,16 @@
-#1 find a library that can process pdf.
 import PyPDF2
 
-with open('dummy.pdf','rb') as file: #rb = Read Binary (Binary in python)
-    reader = PyPDF2.PdfFileReader(file)
-    page = reader.getPage(0) # get the first page and assign to "page"  
-    page.rotateCounterClockwise(90) #rotate -90 in computer memory
-    writer = PyPDF2.PdfFileWriter() #allow us to write a object
-    writer.addPage(page)
-    with open('tilt.pdf','wb') as new_file: # write in binary 
-        writer.write(new_file)
+##1 crap/read wtr.pdf and super.pdf
+template = PyPDF2.PdfFileReader(open('super.pdf','rb')) #read binary
+watermark = PyPDF2.PdfFileReader(open('wtr.pdf','rb'))
+output = PyPDF2.PdfFileWriter()
+
+for i in range(template.getNumPages()):# if 5 pages - loop 5 times
+    page = template.getPage(i) # get each page
+    page.mergePage(watermark.getPage(0)) # merge the only page in wtr
+    output.addPage(page) #adding each page to "output" object
+
+    with open('watermarked_output.pdf','wb') as file:
+        output.write(file) #write output to a file
+
+
